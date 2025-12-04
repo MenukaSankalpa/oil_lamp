@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra Modern Lamp</title>
+
+    <link rel="stylesheet"       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"      
+        referrerpolicy="no-referrer">
+
+    <style>
+        /* ---------- GLOBAL ---------- */
+        :root {
+            --purple: #a060ff;
+            --orange: #ff7a00;
+            --red: #ff003c;
+            --bg-dark: #050010;
+            --bg-light: #e7dcff;
+            --text-light: white;
+            --text-dark: #1b0033;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background:
+                radial-gradient(circle at 10% 0%, #3b0f82 0, transparent 45%),
+                radial-gradient(circle at 90% 100%, #ff4b92 0, transparent 50%),
+                radial-gradient(circle at 50% 120%, #461b8a 0, transparent 60%),
+                var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Ensures content doesn't get cut off on small screens/landscape mode */
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.7s ease, color 0.5s ease;
+            position: relative;
+            padding: 60px 0;
+        }
+
+        /* faint animated grain/glow overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -40px;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(160, 96, 255, 0.18), transparent 55%);
+            mix-blend-mode: screen;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: bgDrift 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgDrift {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+                filter: blur(0px);
+            }
+
+            100% {
+                transform: translate3d(-20px, -20px, 0) scale(1.08);
+                filter: blur(1px);
+            }
+        }
+
+        body.light {
+            background: radial-gradient(circle at top, #ffffff 0, #e7dcff 40%, #d0c2ff 100%);
+            color: var(--text-dark);
+        }
+
+        body.light::before {
+            background:
+                radial-gradient(circle at 10% 0%, rgba(255, 255, 255, 0.8), transparent 60%),
+                radial-gradient(circle at 90% 100%, rgba(255, 214, 120, 0.5), transparent 55%);
+        }
+
+        /* subtle background orbs */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(18px);
+            opacity: 0.6;
+            pointer-events: none;
+            animation: orbFloat 14s ease-in-out infinite alternate;
+        }
+
+        .bg-orb.orb1 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(160, 96, 255, 0.8), transparent 70%);
+            top: 12vh;
+            left: 8vw;
+        }
+
+        .bg-orb.orb2 {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(255, 120, 0, 0.8), transparent 70%);
+            bottom: 10vh;
+            right: 10vw;
+            animation-delay: 4s;
+        }
+
+        .bg-orb.orb3 {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(0, 255, 214, 0.7), transparent 70%);
+            top: 55vh;
+            left: 20vw;
+            animation-delay: 8s;
+        }
+
+        @keyframes orbFloat {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translate3d(20px, -25px, 0) scale(1.12);
+                opacity: 0.9;
+            }
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            padding: 0 10px;
+        }
+
+        /* ---------- MODERN THEME ICON BUTTON ---------- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6a00ff, #a06bff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s ease-out;
+            box-shadow: 0 0 12px #6a00ff80, 0 0 24px #6a00ff40;
+            z-index: 2;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.08) translateY(-1px);
+            box-shadow: 0 0 18px #a06bffb0;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.96);
+        }
+
+        .theme-toggle i {
+            font-size: 24px;
+            color: white;
+            transition: transform 0.4s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle.spin i {
+            transform: rotate(200deg) scale(1.1);
+        }
+
+        body.light .theme-toggle {
+            background: linear-gradient(135deg, #ffdd70, #ffc400);
+            box-shadow: 0 0 12px #ffd70080, 0 0 24px #ffdd7080;
+        }
+
+        body.light .theme-toggle i {
+            color: #1b0033;
+        }
+
+        /* ---------- LAMP ---------- */
+        .lamp-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            padding: 20px 40px 35px;
+            border-radius: 40px;
+            background: rgba(6, 0, 20, 0.6);
+            box-shadow:
+                0 0 26px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(160, 96, 255, 0.35),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+        }
+
+        body.light .lamp-container {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow:
+                0 18px 35px rgba(57, 0, 120, 0.15),
+                inset 0 0 16px rgba(255, 255, 255, 0.6);
+        }
+
+        .lamp {
+            width: 160px;
+            height: 270px;
+            background: rgba(120, 0, 200, 0.2);
+            border: 3px solid var(--purple);
+            border-radius: 80px / 140px;
+            backdrop-filter: blur(12px);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* subtle glass reflection */
+        .lamp::before {
+            content: "";
+            position: absolute;
+            top: -10%;
+            left: 10%;
+            width: 40%;
+            height: 120%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 70%);
+            opacity: 0.7;
+            transform: translateX(0);
+        }
+
+        /* flame */
+        .flame {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 45px;
+            height: 90px;
+            background: radial-gradient(circle at 50% 20%, white, #c799ff, #4b007a);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.7);
+            border-radius: 50% 50% 40% 40%;
+            filter: blur(4px);
+            transition: 0.4s;
+        }
+
+        /* flame OFF */
+        .lamp.off .flame {
+            opacity: 1;
+            background: radial-gradient(circle at 50% 20%, #fff7d1, #ff8600, #b30000);
+            box-shadow: 0 0 20px #ff9a00, 0 0 40px #ff3c00;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        /* shake */
+        .lamp.shake {
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+
+            75% {
+                transform: translateX(-3px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        /* ON GLOW */
+        .lamp.on {
+            box-shadow: 0 0 20px var(--purple),
+                0 0 50px var(--purple) inset,
+                0 0 80px #6a00bd;
+            animation: breatheLamp 2.8s ease-in-out infinite;
+        }
+
+        @keyframes breatheLamp {
+            0% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 0 20px var(--purple), 0 0 50px var(--purple) inset, 0 0 80px #6a00bd;
+            }
+
+            50% {
+                transform: translateY(-3px) scale(1.02);
+                box-shadow: 0 0 26px var(--purple), 0 0 70px var(--purple) inset, 0 0 100px #8b3aff;
+            }
+
+            100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 0 20px var(--purple), 0 0 50px var(--purple) inset, 0 0 80px #6a00bd;
+            }
+        }
+
+        .lamp.on .flame {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+            background: radial-gradient(circle at 50% 20%, white, #d799ff, #5b00a8);
+            box-shadow: 0 0 20px #e3c8ff, 0 0 40px var(--purple);
+        }
+
+        /* ---------- SMOKE ---------- */
+        .smoke {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(4px);
+        }
+
+        .smoke.on {
+            animation: smokeUp 2.2s infinite;
+        }
+
+        @keyframes smokeUp {
+            0% {
+                transform: translate(-50%, 20px) scale(0.3);
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translate(-50%, -80px) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ---------- MAGIC SYMBOLS ---------- */
+        .symbol {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            color: var(--purple);
+            filter: blur(1px);
+        }
+
+        .symbol.float {
+            animation: floatSymbol 2.5s infinite;
+        }
+
+        @keyframes floatSymbol {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-60px);
+                opacity: 0;
+            }
+        }
+
+        /* ---------- MODERN MESSAGE ---------- */
+        .message {
+            margin-top: 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            transition: 0.6s ease;
+            text-shadow: 0 0 12px #a060ff90, 0 0 22px #a060ff60;
+            letter-spacing: 0.02em;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            animation: neonPulse 2.5s ease-in-out infinite alternate;
+        }
+
+        /* inner span for gradient text */
+        .message span.main-text {
+            display: inline-block;
+            background: linear-gradient(120deg, #ff9bff, #a060ff, #4dffe8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .message span.sub-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            opacity: 0.85;
+        }
+
+        @keyframes neonPulse {
+            0% {
+                text-shadow:
+                    0 0 10px rgba(160, 96, 255, 0.6),
+                    0 0 26px rgba(160, 96, 255, 0.4);
+            }
+
+            100% {
+                text-shadow:
+                    0 0 14px rgba(255, 120, 255, 0.9),
+                    0 0 36px rgba(120, 255, 230, 0.7);
+            }
+        }
+
+        /* ---------- RESPONSIVE FIXES ---------- */
+        /* General adjustments for medium-small screens (up to 600px) */
+        @media (max-width:600px) {
+            .lamp-container {
+                padding: 18px 26px 26px;
+            }
+
+            .lamp {
+                width: 130px;
+                height: 220px;
+            }
+
+            .flame {
+                width: 35px;
+                height: 70px;
+            }
+
+            .theme-toggle {
+                width: 50px;
+                height: 50px;
+            }
+
+            .message {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Additional adjustments for very small screens (up to 400px) */
+        @media (max-width: 400px) {
+            body {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+            }
+
+            .message {
+                margin-top: 20px;
+                font-size: 1rem;
+            }
+
+            .message span.sub-text {
+                font-size: 0.75rem;
+            }
+
+            /* Scale down the background orbs further for very small screens */
+            .bg-orb.orb1 {
+                width: 200px;
+                height: 200px;
+                top: 15vh;
+                left: 5vw;
+            }
+
+            .bg-orb.orb2 {
+                width: 180px;
+                height: 180px;
+                bottom: 12vh;
+                right: 5vw;
+            }
+
+            .bg-orb.orb3 {
+                width: 130px;
+                height: 130px;
+                top: 50vh;
+                left: 10vw;
+            }
+        }
+
+        /* Ensure visibility in horizontal/landscape mode on mobile devices */
+        @media (orientation: landscape) and (max-height: 450px) {
+            body {
+                padding: 10px 0;
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-orb orb3"></div>
+
+    <button class="theme-toggle" id="themeBtn" aria-label="Toggle light / dark mode">
+            <i id="themeIcon" class="fa-solid fa-moon"></i>
+    </button>
+
+    <div class="container">
+            <div class="lamp-container" id="lampContainer">
+                    <div class="lamp off" id="lamp">
+                            <div class="flame" id="flame"></div>
+                            <div class="smoke" id="smoke"></div>
+                        </div>
+
+                    <div class="symbol" id="sym1">✦</div>
+                    <div class="symbol" id="sym2">✧</div>
+                    <div class="symbol" id="sym3">✵</div>
+                </div>
+
+            <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        /* ---------- REAL SOUND EFFECTS (LOCAL MP3) ----------
+            NOTE: These paths must exist for the sound to play.
+            The script will run fine even if the files are missing.
+        */
+        const soundOn = new Audio("sounds/power-on.mp3");
+        const soundOff = new Audio("sounds/power-off.mp3");
+
+        /* DOM */
+        const lamp = document.getElementById("lamp");
+        const smoke = document.getElementById("smoke");
+        const msg = document.getElementById("message");
+        const themeBtn = document.getElementById("themeBtn");
+        const themeIcon = document.getElementById("themeIcon");
+        const sym1 = document.getElementById("sym1");
+        const sym2 = document.getElementById("sym2");
+        const sym3 = document.getElementById("sym3");
+
+        let isOn = false;
+
+        /* ---------- POSITION SYMBOLS ---------- */
+        function placeSymbols() {
+            // Recalculates position based on the lamp's current location, 
+            // essential for mobile responsiveness/resizing.
+            const rect = lamp.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+
+            sym1.style.left = (cx - 50) + "px";
+            sym1.style.top = (cy + 40) + "px";
+
+            sym2.style.left = (cx + 40) + "px";
+            sym2.style.top = (cy - 20) + "px";
+
+            sym3.style.left = (cx - 10) + "px";
+            sym3.style.top = (cy - 80) + "px";
+        }
+        placeSymbols();
+        window.addEventListener("resize", placeSymbols);
+
+        /* ---------- LAMP CLICK LOGIC ---------- */
+        lamp.addEventListener("click", () => {
+            lamp.classList.add("shake");
+            setTimeout(() => lamp.classList.remove("shake"), 300);
+
+            if (!isOn) {
+                // State 1: Start charging message
+                msg.innerHTML = "⏳ Charging magical energy…";
+                msg.classList.add("show");
+
+                setTimeout(() => {
+                    isOn = true;
+
+                    // State 2: Turn ON effects
+                    lamp.classList.remove("off");
+                    lamp.classList.add("on");
+
+                    smoke.classList.add("on");
+                    sym1.classList.add("float");
+                    sym2.classList.add("float");
+                    sym3.classList.add("float");
+
+                    msg.innerHTML = "✨ Lamp Activated. Magic flows through the grid.";
+                    try { soundOn.currentTime = 0; soundOn.play(); } catch (e) { }
+
+                    setTimeout(() => {
+                        // State 3: Final message
+                        msg.innerHTML = `
+                    💜 <span class="main-text">Thank you for lighting up this experience.</span> ✨
+                    <span class="sub-text">Your signal has been received. The nebula remembers you.</span>
+                `;
+                        msg.classList.add("show");
+                    }, 900);
+
+                }, 700);
+
+            } else {
+                isOn = false;
+
+                // State 4: Turn OFF effects
+                lamp.classList.remove("on");
+                lamp.classList.add("off");
+
+                smoke.classList.remove("on");
+                sym1.classList.remove("float");
+                sym2.classList.remove("float");
+                sym3.classList.remove("float");
+
+                msg.innerHTML = "🔥 Powering down…";
+                try { soundOff.currentTime = 0; soundOff.play(); } catch (e) { }
+            }
+        });
+
+        /* ---------- THEME SWITCH ---------- */
+        themeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("light");
+
+            // spin animation
+            themeBtn.classList.add("spin");
+            setTimeout(() => themeBtn.classList.remove("spin"), 350);
+
+            const isLight = document.body.classList.contains("light");
+            // switch Font Awesome icons
+            if (isLight) {
+                themeIcon.classList.remove("fa-moon");
+                themeIcon.classList.add("fa-sun");
+            } else {
+                themeIcon.classList.remove("fa-sun");
+                themeIcon.classList.add("fa-moon");
+            }
+        });
+    </script>
+
+</body>
+
+</html>
