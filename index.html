@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultra Modern Lamp</title>
+    <title>Ultra Modern Lamp (Invisible Base)</title>
 
     <link rel="stylesheet"       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"      
-        referrerpolicy="no-referrer">
+        referrerpolicy="no-referrer">
 
     <style>
         /* ---------- GLOBAL ---------- */
         :root {
-            --purple: #a060ff;
+            /* UPDATED COLOR VARIABLES FOR YELLOW THEME */
+            --yellow: #ffc400;
             --orange: #ff7a00;
             --red: #ff003c;
+            --purple: #a060ff; /* Keep for background/symbols */
             --bg-dark: #050010;
             --bg-light: #e7dcff;
             --text-light: white;
@@ -23,7 +25,6 @@
 
         body {
             margin: 0;
-            /* Added modern system font stack for better native rendering on iOS/Android */
             font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             background:
                 radial-gradient(circle at 10% 0%, #3b0f82 0, transparent 45%),
@@ -35,9 +36,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Critical for mobile sizing */
             overflow-x: hidden;
-            /* Critical for mobile to prevent horizontal scroll */
             transition: background 0.7s ease, color 0.5s ease;
             position: relative;
             padding: 60px 0;
@@ -136,7 +135,7 @@
             padding: 0 10px;
         }
 
-        /* ---------- MODERN THEME ICON BUTTON ---------- */
+        /* ---------- MODERN THEME ICON BUTTON (UNCHANGED) ---------- */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -183,7 +182,7 @@
             color: #1b0033;
         }
 
-        /* ---------- LAMP ---------- */
+        /* ---------- LAMP CONTAINER (UNCHANGED) ---------- */
         .lamp-container {
             position: relative;
             display: inline-block;
@@ -205,29 +204,24 @@
                 inset 0 0 16px rgba(255, 255, 255, 0.6);
         }
 
+        /* ---------- LAMP BASE (THE CIRCLE) - NOW INVISIBLE BY DEFAULT ---------- */
         .lamp {
             width: 160px;
             height: 270px;
-            background: rgba(120, 0, 200, 0.2);
-            border: 3px solid var(--purple);
+            /* Make the lamp base transparent by default */
+            background: transparent;
+            border: 3px solid transparent;
             border-radius: 80px / 140px;
-            backdrop-filter: blur(12px);
+            backdrop-filter: none;
             transition: 0.4s;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
-        /* subtle glass reflection */
+        /* subtle glass reflection - removed as base is hidden */
         .lamp::before {
             content: "";
-            position: absolute;
-            top: -10%;
-            left: 10%;
-            width: 40%;
-            height: 120%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 70%);
-            opacity: 0.7;
-            transform: translateX(0);
+            opacity: 0; /* Ensures it is hidden */
         }
 
         /* flame */
@@ -237,6 +231,7 @@
             top: 50%;
             width: 45px;
             height: 90px;
+            /* Default OFF state for flame is cold/purple before transition */
             background: radial-gradient(circle at 50% 20%, white, #c799ff, #4b007a);
             opacity: 0;
             transform: translate(-50%, -50%) scale(0.7);
@@ -245,15 +240,16 @@
             transition: 0.4s;
         }
 
-        /* flame OFF */
+        /* flame OFF - MODIFIED TO BE THE ONLY VISIBLE ELEMENT WHEN OFF */
         .lamp.off .flame {
             opacity: 1;
+            /* Small, dim, red/orange glow */
             background: radial-gradient(circle at 50% 20%, #fff7d1, #ff8600, #b30000);
-            box-shadow: 0 0 20px #ff9a00, 0 0 40px #ff3c00;
-            transform: translate(-50%, -50%) scale(0.9);
+            box-shadow: 0 0 10px #ff9a0070, 0 0 20px #ff3c0050;
+            transform: translate(-50%, -50%) scale(0.6); /* Reduced size to represent a pilot light */
         }
 
-        /* shake */
+        /* shake (UNCHANGED) */
         .lamp.shake {
             animation: shake 0.4s ease;
         }
@@ -280,39 +276,39 @@
             }
         }
 
-        /* ON GLOW */
+        /* ON GLOW - Now just applies animation for the floating effect */
         .lamp.on {
-            box-shadow: 0 0 20px var(--purple),
-                0 0 50px var(--purple) inset,
-                0 0 80px #6a00bd;
-            animation: breatheLamp 2.8s ease-in-out infinite;
+            /* Lamp is transparent, just apply the subtle breathing animation */
+            animation: breatheLampOnlyFlame 2.8s ease-in-out infinite;
+            /* Ensure all base glow/color is off */
+            box-shadow: none;
         }
 
-        @keyframes breatheLamp {
+        /* Animation for the floating effect without base glow */
+        @keyframes breatheLampOnlyFlame {
             0% {
                 transform: translateY(0) scale(1);
-                box-shadow: 0 0 20px var(--purple), 0 0 50px var(--purple) inset, 0 0 80px #6a00bd;
             }
 
             50% {
                 transform: translateY(-3px) scale(1.02);
-                box-shadow: 0 0 26px var(--purple), 0 0 70px var(--purple) inset, 0 0 100px #8b3aff;
             }
 
             100% {
                 transform: translateY(0) scale(1);
-                box-shadow: 0 0 20px var(--purple), 0 0 50px var(--purple) inset, 0 0 80px #6a00bd;
             }
         }
 
+        /* ON FLAME - The main light source */
         .lamp.on .flame {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1.2);
-            background: radial-gradient(circle at 50% 20%, white, #d799ff, #5b00a8);
-            box-shadow: 0 0 20px #e3c8ff, 0 0 40px var(--purple);
+            /* Bright Yellow/Orange Glow */
+            background: radial-gradient(circle at 50% 20%, white, #ffeb8c, #ff9a00);
+            box-shadow: 0 0 20px #ffd700, 0 0 60px var(--orange), 0 0 100px #ffc400;
         }
 
-        /* ---------- SMOKE ---------- */
+        /* ---------- SMOKE (UNCHANGED) ---------- */
         .smoke {
             position: absolute;
             left: 50%;
@@ -345,7 +341,7 @@
             }
         }
 
-        /* ---------- MAGIC SYMBOLS ---------- */
+        /* ---------- MAGIC SYMBOLS (UNCHANGED) ---------- */
         .symbol {
             position: absolute;
             font-size: 20px;
@@ -374,7 +370,7 @@
             }
         }
 
-        /* ---------- MODERN MESSAGE (THE TEXT YOU ASKED ABOUT) ---------- */
+        /* ---------- MODERN MESSAGE (UNCHANGED) ---------- */
         .message {
             margin-top: 25px;
             font-size: 1.3rem;
@@ -382,8 +378,7 @@
             opacity: 0;
             transform: translateY(20px) scale(0.9);
             transition: 0.6s ease;
-            /* Default Dark Mode Text Glow */
-            text-shadow: 0 0 12px #a060ff90, 0 0 22px #a060ff60;
+            text-shadow: 0 0 12px #ffc40090, 0 0 22px #ffc40060;
             letter-spacing: 0.02em;
         }
 
@@ -393,17 +388,13 @@
             animation: neonPulse 2.5s ease-in-out infinite alternate;
         }
 
-        /* Light Mode Text Glow Adjustment: Ensure text is dark and visible */
         body.light .message {
             color: var(--text-dark);
             text-shadow:
                 0 0 2px rgba(0, 0, 0, 0.1),
-                /* Subtle inner shadow for crispness */
                 0 0 8px rgba(120, 50, 255, 0.4);
-            /* Faint purple glow */
         }
 
-        /* inner span for gradient text */
         .message span.main-text {
             display: inline-block;
             background: linear-gradient(120deg, #ff9bff, #a060ff, #4dffe8);
@@ -422,24 +413,23 @@
         @keyframes neonPulse {
             0% {
                 text-shadow:
-                    0 0 10px rgba(160, 96, 255, 0.6),
-                    0 0 26px rgba(160, 96, 255, 0.4);
+                    0 0 10px rgba(255, 196, 0, 0.6),
+                    0 0 26px rgba(255, 196, 0, 0.4);
             }
 
             100% {
                 text-shadow:
                     0 0 14px rgba(255, 120, 255, 0.9),
-                    0 0 36px rgba(120, 255, 230, 0.7);
+                    0 0 36px rgba(255, 196, 0, 0.7);
             }
         }
 
-        /* Ensure the light mode text pulse is subtle, or define a light mode version: */
         body.light @keyframes neonPulse {
             /* Light mode pulse is omitted here to maintain dark text, preventing wash out. */
         }
 
 
-        /* ---------- RESPONSIVE FIXES (Includes iPhone optimization) ---------- */
+        /* ---------- RESPONSIVE FIXES (UNCHANGED) ---------- */
         @media (max-width:600px) {
             .lamp-container {
                 padding: 18px 26px 26px;
@@ -527,22 +517,22 @@
     <div class="bg-orb orb3"></div>
 
     <button class="theme-toggle" id="themeBtn" aria-label="Toggle light / dark mode">
-            <i id="themeIcon" class="fa-solid fa-moon"></i>
+        <i id="themeIcon" class="fa-solid fa-moon"></i>
     </button>
 
     <div class="container">
-            <div class="lamp-container" id="lampContainer">
-                    <div class="lamp off" id="lamp">
-                            <div class="flame" id="flame"></div>
-                            <div class="smoke" id="smoke"></div>
-                        </div>
+        <div class="lamp-container" id="lampContainer">
+            <div class="lamp off" id="lamp">
+                <div class="flame" id="flame"></div>
+                <div class="smoke" id="smoke"></div>
+            </div>
 
-                    <div class="symbol" id="sym1">✦</div>
-                    <div class="symbol" id="sym2">✧</div>
-                    <div class="symbol" id="sym3">✵</div>
-                </div>
+            <div class="symbol" id="sym1">✦</div>
+            <div class="symbol" id="sym2">✧</div>
+            <div class="symbol" id="sym3">✵</div>
+        </div>
 
-            <div class="message" id="message"></div>
+        <div class="message" id="message"></div>
     </div>
 
     <script>
@@ -566,7 +556,7 @@
 
         /* ---------- POSITION SYMBOLS (CRITICAL for mobile positioning) ---------- */
         function placeSymbols() {
-            // Recalculates position based on the lamp's current location, 
+            // Recalculates position based on the lamp's current location,
             // essential for mobile responsiveness/resizing.
             const rect = lamp.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
@@ -612,9 +602,9 @@
                     setTimeout(() => {
                         // State 3: Final message (The text you mentioned)
                         msg.innerHTML = `
-                    <span class="main-text">Thank you for lighting up this experience.</span> ✨
-                    <span class="sub-text">Your signal has been received. The nebula remembers you.</span>
-                `;
+                        <span class="main-text">Thank you for lighting up this experience.</span> ✨
+                        <span class="sub-text">Your signal has been received. The nebula remembers you.</span>
+                    `;
                         msg.classList.add("show");
                     }, 900);
 
