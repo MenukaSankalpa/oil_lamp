@@ -23,7 +23,8 @@
 
         body {
             margin: 0;
-            font-family: "Poppins", sans-serif;
+            /* Added modern system font stack for better native rendering on iOS/Android */
+            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             background:
                 radial-gradient(circle at 10% 0%, #3b0f82 0, transparent 45%),
                 radial-gradient(circle at 90% 100%, #ff4b92 0, transparent 50%),
@@ -33,9 +34,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Ensures content doesn't get cut off on small screens/landscape mode */
             min-height: 100vh;
+            /* Critical for mobile sizing */
             overflow-x: hidden;
+            /* Critical for mobile to prevent horizontal scroll */
             transition: background 0.7s ease, color 0.5s ease;
             position: relative;
             padding: 60px 0;
@@ -372,7 +374,7 @@
             }
         }
 
-        /* ---------- MODERN MESSAGE ---------- */
+        /* ---------- MODERN MESSAGE (THE TEXT YOU ASKED ABOUT) ---------- */
         .message {
             margin-top: 25px;
             font-size: 1.3rem;
@@ -380,6 +382,7 @@
             opacity: 0;
             transform: translateY(20px) scale(0.9);
             transition: 0.6s ease;
+            /* Default Dark Mode Text Glow */
             text-shadow: 0 0 12px #a060ff90, 0 0 22px #a060ff60;
             letter-spacing: 0.02em;
         }
@@ -388,6 +391,16 @@
             opacity: 1;
             transform: translateY(0) scale(1);
             animation: neonPulse 2.5s ease-in-out infinite alternate;
+        }
+
+        /* Light Mode Text Glow Adjustment: Ensure text is dark and visible */
+        body.light .message {
+            color: var(--text-dark);
+            text-shadow:
+                0 0 2px rgba(0, 0, 0, 0.1),
+                /* Subtle inner shadow for crispness */
+                0 0 8px rgba(120, 50, 255, 0.4);
+            /* Faint purple glow */
         }
 
         /* inner span for gradient text */
@@ -420,8 +433,13 @@
             }
         }
 
-        /* ---------- RESPONSIVE FIXES ---------- */
-        /* General adjustments for medium-small screens (up to 600px) */
+        /* Ensure the light mode text pulse is subtle, or define a light mode version: */
+        body.light @keyframes neonPulse {
+            /* Light mode pulse is omitted here to maintain dark text, preventing wash out. */
+        }
+
+
+        /* ---------- RESPONSIVE FIXES (Includes iPhone optimization) ---------- */
         @media (max-width:600px) {
             .lamp-container {
                 padding: 18px 26px 26px;
@@ -447,7 +465,7 @@
             }
         }
 
-        /* Additional adjustments for very small screens (up to 400px) */
+        /* ADDITIONAL MEDIA QUERY FOR VERY SMALL SCREENS (e.g., iPhone SE/mini) */
         @media (max-width: 400px) {
             body {
                 padding-top: 50px;
@@ -468,7 +486,7 @@
                 font-size: 0.75rem;
             }
 
-            /* Scale down the background orbs further for very small screens */
+            /* Scale down the background orbs further */
             .bg-orb.orb1 {
                 width: 200px;
                 height: 200px;
@@ -491,7 +509,7 @@
             }
         }
 
-        /* Ensure visibility in horizontal/landscape mode on mobile devices */
+        /* Ensure visibility in horizontal/landscape mode on mobile devices (e.g., iPhone horizontal) */
         @media (orientation: landscape) and (max-height: 450px) {
             body {
                 padding: 10px 0;
@@ -530,7 +548,6 @@
     <script>
         /* ---------- REAL SOUND EFFECTS (LOCAL MP3) ----------
             NOTE: These paths must exist for the sound to play.
-            The script will run fine even if the files are missing.
         */
         const soundOn = new Audio("sounds/power-on.mp3");
         const soundOff = new Audio("sounds/power-off.mp3");
@@ -547,7 +564,7 @@
 
         let isOn = false;
 
-        /* ---------- POSITION SYMBOLS ---------- */
+        /* ---------- POSITION SYMBOLS (CRITICAL for mobile positioning) ---------- */
         function placeSymbols() {
             // Recalculates position based on the lamp's current location, 
             // essential for mobile responsiveness/resizing.
@@ -593,7 +610,7 @@
                     try { soundOn.currentTime = 0; soundOn.play(); } catch (e) { }
 
                     setTimeout(() => {
-                        // State 3: Final message
+                        // State 3: Final message (The text you mentioned)
                         msg.innerHTML = `
                     💜 <span class="main-text">Thank you for lighting up this experience.</span> ✨
                     <span class="sub-text">Your signal has been received. The nebula remembers you.</span>
