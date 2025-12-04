@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Modern Lamp</title>
+
+<style>
+/* ---------- GLOBAL ---------- */
+:root {
+    --purple:#a060ff;
+    --orange:#ff7a00;
+    --red:#ff003c;
+    --bg-dark:#0a0014;
+    --bg-light:#e7dcff;
+    --text-light:white;
+    --text-dark:#1b0033;
+}
+body {
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:var(--bg-dark);
+    color:var(--text-light);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+    transition:0.5s;
+}
+body.light {
+    background:var(--bg-light);
+    color:var(--text-dark);
+}
+
+.container {
+    text-align:center;
+    width:100%;
+}
+
+/* ---------- MODERN THEME ICON BUTTON ---------- */
+.theme-toggle {
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(135deg,#6a00ff,#a06bff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+    box-shadow:0 0 12px #6a00ff80;
+}
+.theme-toggle:hover {
+    transform:scale(1.12);
+}
+.theme-toggle i {
+    font-size:24px;
+    color:white;
+    transition:0.3s;
+}
+body.light .theme-toggle {
+    background:linear-gradient(135deg,#ffdd70,#ffc400);
+    box-shadow:0 0 12px #ffd70080;
+}
+body.light .theme-toggle i {
+    color:black;
+}
+
+/* ---------- LAMP ---------- */
+.lamp-container {
+    position:relative;
+    display:inline-block;
+    cursor:pointer;
+}
+
+.lamp {
+    width:160px;
+    height:270px;
+    background:rgba(120,0,200,0.25);
+    border:3px solid var(--purple);
+    border-radius:80px / 140px;
+    backdrop-filter:blur(10px);
+    transition:0.4s;
+    position:relative;
+}
+
+/* flame */
+.flame {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:45px;
+    height:90px;
+    background:radial-gradient(circle at 50% 20%, white, #c799ff, #4b007a);
+    opacity:0;
+    transform:translate(-50%, -50%) scale(0.7);
+    border-radius:50% 50% 40% 40%;
+    filter:blur(4px);
+    transition:0.4s;
+}
+
+/* flame OFF */
+.lamp.off .flame {
+    opacity:1;
+    background:radial-gradient(circle at 50% 20%, #fff7d1, #ff8600, #b30000);
+    box-shadow:0 0 20px #ff9a00,0 0 40px #ff3c00;
+    transform:translate(-50%, -50%) scale(0.9);
+}
+
+/* shake */
+.lamp.shake {
+    animation:shake 0.4s ease;
+}
+@keyframes shake {
+    0% { transform:translateX(0); }
+    25% { transform:translateX(-5px); }
+    50% { transform:translateX(5px); }
+    75% { transform:translateX(-3px); }
+    100% { transform:translateX(0); }
+}
+
+/* ON GLOW */
+.lamp.on {
+    box-shadow:0 0 20px var(--purple),
+               0 0 50px var(--purple) inset,
+               0 0 80px #6a00bd;
+}
+
+.lamp.on .flame {
+    opacity:1;
+    transform:translate(-50%, -50%) scale(1.2);
+    background:radial-gradient(circle at 50% 20%, white, #d799ff, #5b00a8);
+    box-shadow:0 0 20px #e3c8ff,0 0 40px var(--purple);
+}
+
+/* ---------- SMOKE ---------- */
+.smoke {
+    position:absolute;
+    left:50%;
+    top:20px;
+    width:15px;
+    height:15px;
+    background:white;
+    border-radius:50%;
+    opacity:0;
+    filter:blur(4px);
+}
+.smoke.on {
+    animation:smokeUp 2.2s infinite;
+}
+@keyframes smokeUp {
+    0% { transform:translate(-50%,20px) scale(0.3); opacity:0; }
+    30% { opacity:0.6; }
+    100% { transform:translate(-50%,-80px) scale(1.2); opacity:0; }
+}
+
+/* ---------- MAGIC SYMBOLS ---------- */
+.symbol {
+    position:absolute;
+    font-size:20px;
+    opacity:0;
+    color:var(--purple);
+    filter:blur(1px);
+}
+.symbol.float {
+    animation:floatSymbol 2.5s infinite;
+}
+@keyframes floatSymbol {
+    0% { transform:translateY(20px); opacity:0; }
+    40% { opacity:1; }
+    100% { transform:translateY(-60px); opacity:0; }
+}
+
+/* ---------- MODERN MESSAGE ---------- */
+.message {
+    margin-top:25px;
+    font-size:1.3rem;
+    font-weight:600;
+    opacity:0;
+    transform:translateY(20px) scale(0.9);
+    transition:0.6s ease;
+    text-shadow:0 0 12px #a060ff90, 0 0 22px #a060ff60;
+}
+.message.show {
+    opacity:1;
+    transform:translateY(0) scale(1);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:600px) {
+    .lamp { width:130px; height:220px; }
+    .flame { width:35px; height:70px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MODERN ICON BUTTON -->
+<button class="theme-toggle" id="themeBtn">
+    <i id="themeIcon">🌙</i>
+</button>
+
+<div class="container">
+    <div class="lamp-container" id="lampContainer">
+        <div class="lamp off" id="lamp">
+            <div class="flame" id="flame"></div>
+            <div class="smoke" id="smoke"></div>
+        </div>
+
+        <div class="symbol" id="sym1">✦</div>
+        <div class="symbol" id="sym2">✧</div>
+        <div class="symbol" id="sym3">✵</div>
+    </div>
+
+    <div class="message" id="message"></div>
+</div>
+
+<script>
+/* ---------- MODERN SOUND EFFECTS (BASE64 WAV) ---------- */
+const soundOn = new Audio("data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAAAgICAf39/f4GBgYKCgoSEhIWFhYaGhobGxscHBwcHx8fICAgISEhIiIiIyMjIyQkJCYmJiwsLDExMTQ0NDw8PEFBQVJSUlpaWltbW1xcXF1dXV5eXl9fX2BgYGFhYWFjY2NnZ2dpaWlqamppa2tra2xsbGtra2ppaWdmZmZhYWFfX19dXV1cXFxaWlpVVVVQUFA+Pj46OjpCQkJGRkZJSUlLS0tOTk5QUFBSUlJUVFRVVVVVVVVUVFRSUlJPT09NTU1JSUlHR0dFRUVBQUA+Pj48PDw7Ozs6Ojo5OTk3Nzc1NTUzMzMxMTExLy8vLS0tKysrJycnIiIiICAgHh4eHBwcGhoaGRkZGBgYF5eXlxcXFpaWllZWVdXV1VVVVRUVFJSUlBQUA==");
+
+const soundOff = new Audio("data:audio/wav;base64,UklGRkIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAAAgICAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCAf39/f4GBgYCBgYGAf39/f4CAgICAgH9/f39/f4CAgICAgH9/f39/f4CAgICAgH9/f39/f4CAgICAgH9/f39/f4CAgICAgICAgICAgICAf39/f4=");
+
+/* DOM */
+const lamp = document.getElementById("lamp");
+const smoke = document.getElementById("smoke");
+const msg = document.getElementById("message");
+const themeBtn = document.getElementById("themeBtn");
+const themeIcon = document.getElementById("themeIcon");
+const sym1 = document.getElementById("sym1");
+const sym2 = document.getElementById("sym2");
+const sym3 = document.getElementById("sym3");
+
+let isOn = false;
+
+/* ---------- POSITION SYMBOLS ---------- */
+function placeSymbols() {
+    const rect = lamp.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+
+    sym1.style.left = (cx - 50) + "px";
+    sym1.style.top = (cy + 40) + "px";
+
+    sym2.style.left = (cx + 40) + "px";
+    sym2.style.top = (cy - 20) + "px";
+
+    sym3.style.left = (cx - 10) + "px";
+    sym3.style.top = (cy - 80) + "px";
+}
+placeSymbols();
+window.addEventListener("resize", placeSymbols);
+
+/* ---------- LAMP CLICK LOGIC ---------- */
+lamp.addEventListener("click", () => {
+    lamp.classList.add("shake");
+    setTimeout(() => lamp.classList.remove("shake"), 300);
+
+    if (!isOn) {
+        msg.innerText = "⏳ Charging magical energy…";
+        msg.classList.add("show");
+
+        setTimeout(() => {
+            isOn = true;
+
+            lamp.classList.remove("off");
+            lamp.classList.add("on");
+
+            smoke.classList.add("on");
+            sym1.classList.add("float");
+            sym2.classList.add("float");
+            sym3.classList.add("float");
+
+            msg.innerText = "✨ Lamp Activated. Magic Flows.";
+            soundOn.play();
+
+            setTimeout(() => {
+                msg.innerHTML = "💜 <b>Thank you for your participation!</b> ✨";
+                msg.classList.add("show");
+            }, 900);
+
+        }, 700);
+
+    } else {
+        isOn = false;
+
+        lamp.classList.remove("on");
+        lamp.classList.add("off");
+
+        smoke.classList.remove("on");
+        sym1.classList.remove("float");
+        sym2.classList.remove("float");
+        sym3.classList.remove("float");
+
+        msg.innerText = "🔥 Powering down…";
+        soundOff.play();
+    }
+});
+
+/* ---------- THEME SWITCH ---------- */
+themeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+    themeIcon.textContent =
+        document.body.classList.contains("light") ? "☀️" : "🌙";
+});
+</script>
+
+</body>
+</html>
